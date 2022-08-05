@@ -3,16 +3,19 @@ def consistence(k):
     b=list(k)
     c=['(','[','{',')',']','}']
     d=0
-    e=0
+    e='True'
     while True:
         if d==len(b):
             break
-        elif b[d] in c[:3]:
+        f=b[d]
+        if f in c[:3]:
             a.append(b[d])
-        elif b[d] in c[3:] and a[-1]!=c[c.index(b[d])-3]:
-            e+=1
+        elif f in c[3:] and (len(a)==0 or a[-1]!=c[c.index(f)-3]):
+            e='False'
             break
-        elif b[d] in c[3:] and a[-1]==c[c.index(b[d])-3]:
+        elif f in c[3:] and a[-1]==c[c.index(f)-3]:
             a=a[:-1]
         d+=1
-    return print('True') if e==0 else print('False')
+    if len(a)!=0:
+        e='False'
+    return print(e)
