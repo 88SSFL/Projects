@@ -1,0 +1,16 @@
+def letters(a,b):
+    c=list(a)
+    d=list(b)
+    e=list()
+    f=list()
+    g=len(a)+1
+    for i in d:
+        if i not in e:
+            e.append(i)
+            f.append(d.count(i))
+    for i in e:
+        if c.count(i)<f[e.index(i)]:
+            g=0
+        else:
+            g=min(c.count(i)//f[e.index(i)],g)
+    return(print(g))
