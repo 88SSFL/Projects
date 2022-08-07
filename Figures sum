@@ -1,7 +1,4 @@
 def figures_sum(n):
-    n=str(n)
-    a=list(n)
-    b=0
-    for i in a:
-        b+=int(i)
-    return print(b)
+    list_1=list(str(n))
+    list_1= list(int(i) for i in list_1)
+    return print(sum(list_1))
