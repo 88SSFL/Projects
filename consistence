@@ -1,21 +1,21 @@
 def consistence(k):
-    a=list()
-    b=list(k)
-    c=['(','[','{',')',']','}']
-    d=0
-    e='True'
+    list_1=list(k)# make a list of  each item of the input
+    guide=['(','[','{',')',']','}'] #list that wiil function to guide the pair verification
+    pair_verification=list()#this song will verify if every item has the right pair correctly positioned
+    index=0 # variable that will fuction as the idex of the lists
+    result='True'#output
     while True:
-        if d==len(b):
+        if index==len(list_1):
             break
-        f=b[d]
-        if f in c[:3]:
-            a.append(b[d])
-        elif f in c[3:] and (len(a)==0 or a[-1]!=c[c.index(f)-3]):
-            e='False'
+        item=list_1[index]
+        if item in guide[:3]:
+            pair_verification.append(item)
+        elif item in guide[3:] and (len(pair_verification)==0 or pair_verification[-1]!=guide[guide.index(item)-3]):
+            result='False'
             break
-        elif f in c[3:] and a[-1]==c[c.index(f)-3]:
-            a=a[:-1]
-        d+=1
-    if len(a)!=0:
-        e='False'
-    return print(e)
+        elif item in guide[3:] and pair_verification[-1]==guide[guide.index(item)-3]:
+            pair_verification=pair_verification[:-1]
+        index+=1
+    if len(pair_verification)!=0:
+        result='False'
+    return print(result)
