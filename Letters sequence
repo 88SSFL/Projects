@@ -1,16 +1,14 @@
 def letters(a,b):
-    c=list(a)
-    d=list(b)
-    e=list()
-    f=list()
-    g=len(a)+1
-    for i in d:
-        if i not in e:
-            e.append(i)
-            f.append(d.count(i))
-    for i in e:
-        if c.count(i)<f[e.index(i)]:
-            g=0
+    list_output=list(a)# transform the "a" in a list
+    list_input=list(b) #transform "b" in a list
+    unique=list(set(list_input)) # make a list with the unique values in b
+    count_unique=list()#list of the amount of times a unique value appears in b
+    repeat=len(a)+1# this variable will indicate how many "a's" can be constructed with the letters of b"
+    for i in unique:
+        count_unique.append(list_input.count(i))
+    for i in unique:
+        if list_output.count(i)<count_unique[unique.index(i)]:
+            repeat=0
         else:
-            g=min(c.count(i)//f[e.index(i)],g)
-    return(print(g))
+            repeat=min(list_output.count(i)//count_unique[unique.index(i)],repeat)
+    return(print(repeat))
