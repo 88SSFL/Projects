@@ -1,0 +1,371 @@
+from tkinter import *
+from tkinter import messagebox
+# file reading
+
+def test_file():
+    try:
+        file_=open('file.txt','r')
+        b=file_.read()
+        file_.close()
+    except:
+        file_=open('file.txt','w+')
+        b=file_.read()
+        file_.close()
+
+def new_file():
+    test_file()
+    file_ = open('file.txt', 'a')
+    file_.write(f'{data_bank[int(len(data_bank))-1][0]};{data_bank[int(len(data_bank))-1][1]}!')
+    file_.close()
+
+def edit_file():
+    test_file()
+    file_=open('file.txt', 'w')
+    for d in data_bank:
+        file_.write(f'{d[0]};{d[1]}!')
+    file_.close()
+
+
+
+def read_file():
+    test_file()
+    c = open('file.txt', 'r')
+    b = c.read()
+    gross_data,data_partially_treated,data_bank  = ([] for i in range(3))
+    global name_list, age_list, maximum, minimum
+    name_list, age_list, maximum, minimum=([] for i in range(4))
+    for data in b:
+        if data != '!' and data != ';':
+            gross_data.append(data)
+        elif data == ';':
+            h = ''.join(gross_data)
+            data_partially_treated.append(h)
+            name_list.append(h)
+            gross_data = []
+        elif data == '!':
+            h = ''.join(gross_data)
+            data_partially_treated.append(int(h))
+            age_list.append(int(h))
+            data_bank.append(data_partially_treated)
+            gross_data, data_partially_treated  = [],[]
+    for i in range(len(age_list)):
+       if age_list[i]==max(age_list):
+           maximum.append([data_bank[i][0],age_list[i]])
+       if age_list[i]==min(age_list):
+           minimum.append([data_bank[i][0],age_list[i]])
+    global average, variance
+    variance = 0
+    if len(data_bank) == 0:
+        average = 0
+    else:
+        average = round(sum(age_list) / len(age_list),2)
+        for i in age_list:
+            variance += (i - average) ** 2
+        variance=round(variance/len(age_list),2)
+    c.close()
+    return data_bank
+global data_bank
+data_bank=read_file()
+
+
+
+#final da leitura de file
+#Menu Edit
+
+def apply():
+    if d5.get() != '':
+        data_bank[int(aa2.get()) - 1][0]= d5.get()
+        name_list[int(aa2.get()) - 1]=d5.get()
+    if d6.get() != '':
+        data_bank[int(aa2.get()) - 1][1]= int(d6.get())
+        age_list[int(aa2.get()) - 1]=int(d6.get())
+    maximum, minimum = [],[]
+    for i in range(len(age_list)):
+        if age_list[i] == max(age_list):
+            maximum.append([data_bank[i][0], age_list[i]])
+        if age_list[i] == min(age_list):
+            minimum.append([data_bank[i][0], age_list[i]])
+    global average, variance
+    average = round(sum(age_list) / len(age_list), 2)
+    variance=0
+    for i in age_list:
+        variance += (i - average) ** 2
+    variance = round(variance / len(age_list), 2)
+    bb4['text'], bb5['text'], bb6['text']='','',''
+    edit_file()
+    d.destroy()
+    aa2.delete(0, 'end')
+
+def cancel():
+    bb4['text'], bb5['text'],bb6['text']='','',''
+    d.destroy()
+
+def delete_():
+    if messagebox.askyesno(message= f' Are you sure you want to delete the entry number {aa2.get()} ?'):
+       del data_bank[int(aa2.get())-1]
+       del name_list[int(aa2.get()) - 1]
+       del age_list[int(aa2.get()) - 1]
+       global maximum, minimum
+       maximum, minimum = [],[]
+       for i in range(len(age_list)):
+           if age_list[i] == max(age_list):
+               maximum.append([data_bank[i][0], age_list[i]])
+           if age_list[i] == min(age_list):
+               minimum.append([data_bank[i][0], age_list[i]])
+       global average, variance
+       variance = 0
+       if len(data_bank) == 0:
+           average = 0
+       else:
+           average = round(sum(age_list) / len(age_list), 2)
+           for i in age_list:
+               variance += (i - average) ** 2
+           variance = round(variance / len(age_list), 2)
+       edit_file()
+       edit_.destroy()
+
+def edit_2():
+    global d, d5, d6
+    d = Toplevel()
+    d.columnconfigure(0, minsize=20)
+    d.columnconfigure(2, minsize=30)
+    d.rowconfigure(0, minsize=30)
+    d.rowconfigure(1, minsize=30)
+    d.rowconfigure(4, minsize=40)
+    Label(d, text=f'    Name:   {data_bank[int(aa2.get()) - 1][0]}',font=('',13)).grid(row=0, column=0, columnspan=3, sticky='ws')
+    Label(d, text=f'    Age:   {data_bank[int(aa2.get()) - 1][1]}',font=('',13)).grid(row=1, column=0, columnspan=3, sticky='wn')
+    Label(d, text='New Name').grid(row=2, column=0)
+    Label(d, text='New Age').grid(row=3, column=0)
+    d5 = Entry(d, width=30)
+    d6 = Entry(d, width=5)
+    Button(d, text='Apply', command=apply).grid(row=4, column=1)
+    Button(d, text='Cancel', command=cancel).grid(row=4, column=1, sticky='e')
+    d5.grid(row=2, column=1)
+    d6.grid(row=3, column=1,sticky='w')
+
+
+
+def search():
+    if data_bank==[]:
+        messagebox.showinfo(message='Empty Data Bank')
+    else:
+        bb4['text']=f'{aa2.get()}'
+        bb5['text'] = f'{data_bank[int(aa2.get()) - 1][0]}'
+        bb6['text'] = f'{data_bank[int(aa2.get()) - 1][1]}'
+    c = Frame(edit_)
+    c.rowconfigure(0, minsize=33)
+    c.columnconfigure(1, minsize=70)
+    cc1 = Button(c, text='Edit',font=('',10), command=edit_2)
+    cc2 = Button(c, text='Delete',font=('',10),command=delete_)
+    c.grid(row=3, column=1)
+    cc1.grid(row=0, column=0, sticky='n')
+    cc2.grid(row=0, column=1, sticky='n')
+
+
+
+def back_2():
+    edit_.destroy()
+
+
+def edit():
+    global edit_, bb4, bb5, bb6, bb7, aa2
+    edit_ = Toplevel()
+    edit_.title('Entry Edition')
+    edit_.columnconfigure(1, minsize=300)
+    aa = Frame(edit_)
+    aa.rowconfigure(1, minsize=50)
+    aa.columnconfigure(1, min=50)
+    aa.columnconfigure(2, min=70)
+    Label(aa, text="code",font=('',10)).grid(row=1, column=0,sticky='e')
+    aa2 = Entry(aa, width=3)
+    Button(aa, text="Search", command=search).grid(row=1, column=2, sticky='w')
+    aa.grid(row=1, column=1)
+    aa2.grid(row=1, column=1,sticky='w')
+    b = Frame(edit_)
+    b.rowconfigure(2, minsize=40)
+    b.columnconfigure(0, minsize=70)
+    b.columnconfigure(2, minsize=70)
+    Label(b, text='Code', bd=1, relief="raised", borderwidth=1, width=5,font=('',13)).grid(row=0, column=0, sticky='nes')
+    Label(b, text='Name', bd=1, relief="raised", borderwidth=1,width=40,font=('',13)).grid(row=0, column=1, sticky='new')
+    Label(b, text='Age', bd=1, relief="raised", borderwidth=1, width=5,font=('',13)).grid(row=0, column=2, sticky='nws')
+    bb4=Label(b, bg='white', relief='solid', borderwidth=1, width=5,font=('',13))
+    bb5 = Label(b, bg='white', relief='solid', borderwidth=1, width=40,font=('',13))
+    bb6 = Label(b, bg='white', relief='solid', borderwidth=1, width=5,font=('',13))
+    bb4.grid(row=1, column=0, sticky='ne')
+    bb5.grid(row=1, column=1, sticky='n')
+    bb6.grid(row=1, column=2, sticky='nw')
+    bb7 = Button(b, text='Back', command=back_2)
+    b.grid(row=2, column=0, columnspan=2)
+    bb7.grid(row=2, column=2)
+    edit_.mainloop()
+
+
+#Menu de Inclusão
+
+def apply_new():
+    list_ = list()
+    list_.append(str(new3.get()))
+    list_.append(str(new4.get()))
+    name_list.append(str(new3.get()))
+    age_list.append(int(new4.get()))
+    global maximum, minimum
+    maximum,minimum = [],[]
+    for i in range(len(age_list)):
+       if age_list[i]==max(age_list):
+           maximum.append([name_list[i],age_list[i]])
+       if age_list[i]==min(age_list):
+           minimum.append([name_list[i],age_list[i]])
+    global average, variance
+    average = round(sum(age_list) / len(age_list),2)
+    variance = 0
+    for i in age_list:
+        variance += (i - average)**2
+    variance=round(variance/len(age_list),2)
+    data_bank.append(list_[:])
+    new_file()
+    new.destroy()
+
+
+
+def cancel_new():
+    new.destroy()
+
+
+def new_():
+    global new, new3,new4
+    new = Toplevel()
+    new.title('Entry Inclusion')
+    new.columnconfigure(0, minsize=50)
+    new.columnconfigure(2, minsize=70)
+    new.rowconfigure(0, minsize=45)
+    new.rowconfigure(1, minsize=30)
+    new.rowconfigure(2, minsize=40)
+    Label(new, text='Name').grid(row=0, column=0, sticky='e')
+    Label(new, text='Age').grid(row=1, column=0, sticky='e')
+    new3 = Entry(new, width=30)
+    new4 = Entry(new, width=5)
+    Button(new, text='Apply', command=apply_new).grid(row=2, column=1,sticky='e')
+    Button(new, text='Cancel', command=cancel_new).grid(row=2, column=2)
+    new3.grid(row=0, column=1)
+    new4.grid(row=1, column=1,sticky='w')
+
+
+    # Menu cadastro
+
+    #Parte 2 do menu do botão esquerdo do mouse
+def options(s):
+    q.tk_popup(s.x_root, s.y_root, 0)
+
+    # Fim daParte 2 do menu do botão esquerdo do mouse
+
+
+def back_1():
+    a.destroy()
+def back_3():
+    z.destroy()
+
+
+def see_entries():
+    global a
+    a=Tk()
+    a.title('Entry Visualization')
+    Label(a, text='Entries', font=('bold', 14)).grid(row=0,column=1,columnspan=3)
+    Label(a,text='Code',bd=1,relief="raised",borderwidth=1).grid(row=1, column=1,sticky='news')
+    Label(a,text='Name',bd=1,relief="raised",borderwidth=1).grid(row=1, column=2,sticky='news')
+    Label(a, text='Age',bd=1,relief="raised",borderwidth=1).grid(row=1, column=3,sticky='news')
+    n=0
+    final_range= 1 if data_bank==[] else len(data_bank)
+    for h in range (0,final_range):
+        l=Label(a,text=f'{h+1 if data_bank!=[]else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=5)
+        j=Label(a,text=f' {data_bank[h][0] if data_bank!=[]else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=40,anchor='w')
+        k=Label(a,text=f'{data_bank[h][1] if data_bank!=[]else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=5)
+        l.grid(row=h+2,column=1,sticky='news')
+        j.grid(row=h + 2, column=2,sticky='news')
+        k.grid(row=h + 2, column=3,sticky='news')
+        l.bind('<Button-3>',options)
+        j.bind('<Button-3>', options)
+        k.bind('<Button-3>', options)
+        n+=1
+    Button(a, text='New',width=10,command=new_).grid(row=n + 4, column=2,sticky='e')
+    Button(a, text='Back',command=back_1).grid(row=n+4,column=3)
+    a.rowconfigure(n+3,minsize=20)
+    a.rowconfigure(0,minsize=50)
+    a.rowconfigure(n+5,minsize=20)
+    a.columnconfigure(4,minsize=20)
+    a.columnconfigure(0, minsize=20)
+    o = Menu(a)
+    p = Menu(o, tearoff=0)
+    o.add_cascade(label='Edit', menu=p)
+    p.add_command(label='Edit Name/Age',command=edit)
+    p.add_command(label='New Entry',command=new_)
+    p.add_command(label='Delete Data',command=edit)
+    p.add_separator()
+    p.add_command(label='Back',command=back_1)
+    #menu do botão direito do mouse - parte 1
+    global q
+    q = Menu(a, tearoff=0)
+    q.add_command(label='Edit Name/Age',command=edit)
+    q.add_command(label='Delete Data',command=edit)
+    # fim da parte 1 do menu do botão direito do mouse
+    a.config(menu=o)
+    a.mainloop()
+
+def statistics():
+    global z
+    maximum_span=len(maximum) if data_bank!=[] else 1
+    minimum_span=len(minimum) if data_bank!=[] else 1
+    z=Tk()
+    z.title('Statistics')
+    Label(z, text='Statistics', font=('bold', 14)).grid(row=0,column=1,columnspan=3)
+    Label(z,text='Older Age',bd=1,font=('',13),borderwidth=1).grid(row=1, column=1,rowspan=maximum_span)
+    n=0
+    for i in range(maximum_span):
+        Label(z,text=f'{maximum[i][0]if data_bank!=[] else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=40,anchor='w').grid(row=i+1, column=2,sticky='news')
+        Label(z, text=f'Age: {maximum[i][1]if data_bank!=[] else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=8).grid(row=i+1, column=3,sticky='news')
+        n+=1
+    Label(z,text='Younger Age',bd=1,font=('',13),borderwidth=1).grid(row=maximum_span+1, column=1,rowspan=minimum_span)
+    for i in range(minimum_span):
+        Label(z,text=f'{minimum[i][0]if data_bank!=[] else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=40,anchor='w').grid(row=maximum_span+i+1, column=2,sticky='news')
+        Label(z, text=f'Age: {minimum[i][1]if data_bank!=[] else ""}',bg='white',font=('',13),relief="solid",borderwidth=1,width=8).grid(row=maximum_span+i+1, column=3,sticky='news')
+        n+=1
+    Label(z,text='Average Age',font=('',13),borderwidth=1).grid(row=maximum_span+minimum_span+1, column=1,sticky='news')
+    Label(z,text=f'{average if data_bank!=[] else ""}',bg='white',font=('',13),relief="raised",borderwidth=1,width=50).grid(row=maximum_span+minimum_span+1, column=2,columnspan=2,sticky='news')
+    Label(z, text='Variance', font=('', 13), borderwidth=1).grid(row=maximum_span + minimum_span + 2,column=1, sticky='news')
+    Label(z,text=f'{variance if data_bank!=[] else ""}',bg='white',font=('',13),relief="raised",borderwidth=1,width=50).grid(row=maximum_span+minimum_span+2, column=2,columnspan=2,sticky='news')
+    Label(z, text='Standard Deviation', font=('', 13), borderwidth=1).grid(row=maximum_span + minimum_span + 3,column=1, sticky='news')
+    Label(z,text=f'{round(variance**0.5,2) if data_bank!=[] else ""}',bg='white',font=('',13),relief="raised",borderwidth=1,width=50).grid(row=maximum_span+minimum_span+3, column=2,columnspan=2,sticky='news')
+    Button(z, text='Back',font=('',11), command=back_3).grid(row=maximum_span+minimum_span+4, column=3)
+    Label(z).grid(rowspan=maximum_span+minimum_span+5, column=0)
+    Label(z).grid(rowspan=maximum_span + minimum_span + 5, column=4)
+    z.columnconfigure(0, min=20)
+    z.columnconfigure(4, min=50)
+
+#Menu Principal
+def exit():
+    principal.destroy()
+
+
+def principal_():
+    global principal
+    principal=Tk()
+    principal.title('LF Data Bank')
+    principal.geometry('1000x500')
+    image=PhotoImage(file='Fundo.gif')
+    background = Label(principal, image=image)
+    background.place(x=0, y=0, relwidth=1, relheight=1)
+    principal_1=Frame(principal)
+    Label(principal_1,text='MENU ',font=('',18,'bold')).grid(row=1,column=0,sticky='n')
+    Button(principal_1,text='Entries in the System',width=50,font=('',15),command=see_entries).grid(row=2,column=0,sticky='n')
+    Button(principal_1, text='Edit/Delete Entries',width=50,font=('',15),command=edit).grid(row=3,column=0,sticky='n')
+    Button(principal_1, text='Include Entries', width=50, font=('',15), command=new_).grid(row=4, column=0, sticky='n')
+    Button(principal_1, text='Statistics',width=50,font=('',15),command=statistics).grid(row=5,column=0,sticky='n')
+    Button(principal_1, text='Exit',width=50,font=('',15),command=exit).grid(row=6,column=0,sticky='n')
+    principal.columnconfigure(0,minsize=130)
+    principal_1.columnconfigure(0,minsize=700)
+    principal_1.rowconfigure(0, minsize=10)
+    principal_1.rowconfigure(6, minsize=50)
+    principal_1.pack()
+    principal.mainloop()
+
+#Execution
+principal_()
