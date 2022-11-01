@@ -1,0 +1,42 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+import pyautogui
+import subprocess
+
+navegador=webdriver.Chrome()
+
+navegador.get('https://www.investidorpetrobras.com.br/resultados-e-comunicados/central-de-resultados/')
+time.sleep(7)
+element=navegador.find_element(By.XPATH,'//*[@id="tabela_1"]/tr[6]/td[3]/a/img')
+navegador.execute_script("arguments[0].click();", element)
+p = navegador.current_window_handle
+parent = navegador.window_handles[0]
+chld = navegador.window_handles[1]
+navegador.switch_to.window(chld)
+url = navegador.current_url#
+time.sleep(5)
+
+pyautogui.hotkey('ctrl','s')
+time.sleep(2)
+pyautogui.press('enter')
+
+
+navegador.get('https://mail.google.com/mail/u/0/#inbox')
+time.sleep(2)
+element2=navegador.find_element(By.XPATH,'//*[@id="identifierId"]')
+navegador.execute_script("arguments[0].click();", element2)
+login=list('luizfelipes88@gmail.com')
+for i in login:
+    pyautogui.write(i)
+    time.sleep(0.3)
+pyautogui.press('enter')
+
+element3=navegador.find_element(By.XPATH,'//*[@id="next"]/div/div/a')
+navegador.execute_script("arguments[0].click();", element3)
+
+time.sleep(1)
+element4=navegador.find_element(By.XPATH,'/html/body/header/div/div/div/a[2]')
+navegador.execute_script("arguments[0].click();", element4)
+
+#self.driver = webdriver.Chrome(options=pdf)
